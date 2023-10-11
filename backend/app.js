@@ -19,6 +19,7 @@ db.once('open', () => {
 });
 
 app.use('/api', require('./routes/inventory'));
+app.use('/api', require('./routes/sales'));
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
