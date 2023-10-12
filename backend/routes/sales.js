@@ -25,4 +25,16 @@ router.post('/sales', async (req, res) => {
   }
 });
 
+
+router.get('/sales', async (req, res) => {
+  try {
+    const sales = await Sale.find();
+    res.json(sales);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 module.exports = router;
