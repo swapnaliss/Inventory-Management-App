@@ -2,12 +2,13 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import DataTable from './components/DataTable';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchInventory, addItem, deleteItem } from './store/actions/inventoryActions';
+import { fetchInventory, addItem, deleteItem, editItem } from './store/actions/inventoryActions';
 import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
   const [selectedMenuItem, setSelectedMenuItem] = useState('Inventory');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
   const [newItem, setNewItem] = useState({
     name: '',
     price: 0,
@@ -24,18 +25,36 @@ function App() {
 
   const handleAddItem = (event) => {
     event.preventDefault();
-    dispatch(addItem(newItem));
-    setNewItem({
-      name: '',
-      price: 0,
-      quantity: 0,
-    });
-    dispatch(fetchInventory());
-    setIsModalOpen(false);
+    if (editingItem) {
+      dispatch(editItem(editingItem._id, {
+        name: newItem.name,
+        price: newItem.price,
+        quantity: newItem.quantity,
+      }));
+      dispatch(fetchInventory());
+      setEditingItem(null);
+      setIsModalOpen(false);
+    } else {
+      dispatch(addItem(newItem));
+      setNewItem({
+        name: '',
+        price: 0,
+        quantity: 0,
+      });
+      dispatch(fetchInventory());
+      setIsModalOpen(false);
+    }
   };
 
   const handleEdit = (item) => {
-
+    console.log(item);
+    setEditingItem(item);
+    setIsModalOpen(true);
+    setNewItem({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    });
   }
 
   const handleDelete = (itemId) => {
@@ -43,10 +62,14 @@ function App() {
     dispatch(deleteItem(itemId));
     dispatch(fetchInventory());
   };
-  
 
   const openModal = () => {
     setIsModalOpen(true);
+    setNewItem({
+      name: '',
+      price: 0,
+      quantity: 0,
+    });
   };
 
   const closeModal = () => {
@@ -112,7 +135,7 @@ function App() {
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
             <div className="bg-white w-1/2 p-6 rounded-lg">
-              <h2 className="text-2xl font-semibold mb-4">Add New Item</h2>
+              <h2 className="text-2xl font-semibold mb-4">{editingItem ? "Edit item" : "Add item"}</h2>
               <form onSubmit={handleAddItem}>
                 <div className="mb-4">
                   <label htmlFor="name" className="block text-sm font-medium text-gray-600">
@@ -163,7 +186,7 @@ function App() {
                 </div>
                 <div className="flex justify-end">
                   <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded-md">
-                    Add
+                    {editingItem ? "Edit" : "Add"}
                   </button>
                   <button
                     onClick={closeModal}
