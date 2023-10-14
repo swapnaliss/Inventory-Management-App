@@ -1,5 +1,3 @@
-// DataTable.js
-
 import React from 'react';
 
 const DataTable = ({ data, onEdit, onDelete }) => {
@@ -24,7 +22,7 @@ const DataTable = ({ data, onEdit, onDelete }) => {
                 <button onClick={() => onEdit(item)} className="mx-2 text-blue-600 hover:underline">
                   Edit
                 </button>
-                <button onClick={() => onDelete(item.id)} className="text-red-600 hover:underline">
+                <button onClick={() => onDelete(item._id)} className="text-red-600 hover:underline">
                   Delete
                 </button>
               </div>

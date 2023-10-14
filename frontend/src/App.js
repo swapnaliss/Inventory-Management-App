@@ -2,7 +2,7 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import DataTable from './components/DataTable';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchInventory, addItem } from './store/actions/inventoryActions';
+import { fetchInventory, addItem, deleteItem } from './store/actions/inventoryActions';
 import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
@@ -20,6 +20,7 @@ function App() {
   const dispatch = useDispatch();
 
   console.log(inventoryData);
+  console.log(error)
 
   const handleAddItem = (event) => {
     event.preventDefault();
@@ -37,9 +38,12 @@ function App() {
 
   }
 
-  const handleDelete = (item) => {
-
-  }
+  const handleDelete = (itemId) => {
+    console.log(itemId);
+    dispatch(deleteItem(itemId));
+    dispatch(fetchInventory());
+  };
+  
 
   const openModal = () => {
     setIsModalOpen(true);

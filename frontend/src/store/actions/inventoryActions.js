@@ -7,6 +7,9 @@ export const FETCH_INVENTORY_FAILURE = 'FETCH_INVENTORY_FAILURE';
 export const ADD_ITEM_REQUEST = 'ADD_ITEM_REQUEST';
 export const ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS';
 export const ADD_ITEM_FAILURE = 'ADD_ITEM_FAILURE';
+export const DELETE_ITEM_REQUEST = 'DELETE_ITEM_REQUEST';
+export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS';
+export const DELETE_ITEM_FAILURE = 'DELETE_ITEM_FAILURE';
 
 export const fetchInventoryRequest = () => ({
   type: FETCH_INVENTORY_REQUEST,
@@ -64,3 +67,31 @@ export const addItem = createAsyncThunk('inventory/addItem', async (item, { disp
     throw error;
   }
 });
+
+export const deleteItemRequest = () => ({
+  type: DELETE_ITEM_REQUEST,
+});
+
+export const deleteItemSuccess = () => ({
+  type: DELETE_ITEM_SUCCESS,
+});
+
+export const deleteItemFailure = (error) => ({
+  type: DELETE_ITEM_FAILURE,
+  payload: error,
+});
+
+export const deleteItem = (itemId) => {
+  console.log(itemId);
+  return (dispatch) => {
+    dispatch(deleteItemRequest());
+    axios
+      .delete(`http://localhost:5000/api/items/${itemId}`)
+      .then(() => {
+        dispatch(deleteItemSuccess());
+      })
+      .catch((error) => {
+        dispatch(deleteItemFailure(error));
+      });
+  };
+};
