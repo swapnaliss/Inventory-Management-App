@@ -1,10 +1,12 @@
 import './App.css';
 import { useState, useEffect } from 'react';
 import DataTable from './components/DataTable';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchInventory } from './store/actions/inventoryActions';
+import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
   const [selectedMenuItem, setSelectedMenuItem] = useState('Inventory');
-  const [items, setItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // To control modal visibility
   const [newItem, setNewItem] = useState({
     name: '',
@@ -12,6 +14,12 @@ function App() {
     quantity: 0,
     description: '',
   });
+  const inventoryData = useSelector((state) => state.inventory.items);
+  const loading = useSelector((state) => state.inventory.loading);
+  const error = useSelector((state) => state.inventory.error);
+  const dispatch = useDispatch();
+
+  console.log(inventoryData);
 
   const handleAddItem = (newItem) => {
   };
@@ -24,45 +32,22 @@ function App() {
 
   }
 
-  // Function to open the modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-  // write a sample data to test the table
   useEffect(() => {
-    setItems([
-      {
-        name: 'Item 1',
-        price: 100,
-        quantity: 10,
-        description: 'This is item 1',
-      },
-      {
-        name: 'Item 2',
-        price: 200,
-        quantity: 20,
-        description: 'This is item 2',
-      },
-      {
-        name: 'Item 3',
-        price: 300,
-        quantity: 30,
-        description: 'This is item 3',
-      },
-    ]);
-  }, []);
+    dispatch(fetchInventory());
+  }, [dispatch]);
 
-
+  console.log(inventoryData);
 
   return (
     <div className="flex h-screen">
-
       {/* Left Sidebar */}
       <div className="w-1/4 bg-gray-900 text-white p-4 flex-grow-1">
         <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
@@ -96,10 +81,11 @@ function App() {
       <div className="w-3/4 p-4">
         {selectedMenuItem === 'Inventory' && (
           <>
+            <LoadingSpinner isLoading={loading} />
             <button onClick={openModal} className="bg-green-500 text-white py-2 px-4 rounded-md mb-4">
               Add Item
             </button>
-            <DataTable data={items} onEdit={handleEdit} onDelete={handleDelete} />
+            <DataTable data={inventoryData} onEdit={handleEdit} onDelete={handleDelete} />
           </>
         )}
         {selectedMenuItem === 'Sales' && (
@@ -117,25 +103,65 @@ function App() {
             <div className="bg-white w-1/2 p-6 rounded-lg">
               <h2 className="text-2xl font-semibold mb-4">Add New Item</h2>
               <form>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={newItem.name}
-                  onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                  className="w-full mb-4 p-2 rounded"
-                />
-                {/* Add other form fields here as needed */}
-                <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded-md">
-                  Add
-                </button>
-                <button onClick={closeModal} className="bg-red-500 text-white py-2 px-4 rounded-md ml-4">
-                  Cancel
-                </button>
+                <div className="mb-4">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-600">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter the name"
+                    value={newItem.name}
+                    onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                    className="w-full p-2 rounded border border-gray-300"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="price" className="block text-sm font-medium text-gray-600">
+                    Price
+                  </label>
+                  <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    placeholder="Enter the price"
+                    value={newItem.price}
+                    onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+                    className="w-full p-2 rounded border border-gray-300"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="quantity" className="block text-sm font-medium text-gray-600">
+                    Quantity
+                  </label>
+                  <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    placeholder="Enter the quantity"
+                    value={newItem.quantity}
+                    onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
+                    className="w-full p-2 rounded border border-gray-300"
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded-md">
+                    Add
+                  </button>
+                  <button
+                    onClick={closeModal}
+                    className="bg-red-500 text-white py-2 px-4 rounded-md ml-4"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
