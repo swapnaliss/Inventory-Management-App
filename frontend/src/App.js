@@ -20,9 +20,6 @@ function App() {
   const error = useSelector((state) => state.inventory.error);
   const dispatch = useDispatch();
 
-  console.log(inventoryData);
-  console.log(error)
-
   const handleAddItem = (event) => {
     event.preventDefault();
     if (editingItem) {
@@ -41,13 +38,11 @@ function App() {
         price: 0,
         quantity: 0,
       });
-      dispatch(fetchInventory());
       setIsModalOpen(false);
     }
   };
 
   const handleEdit = (item) => {
-    console.log(item);
     setEditingItem(item);
     setIsModalOpen(true);
     setNewItem({
@@ -58,7 +53,6 @@ function App() {
   }
 
   const handleDelete = (itemId) => {
-    console.log(itemId);
     dispatch(deleteItem(itemId));
     dispatch(fetchInventory());
   };

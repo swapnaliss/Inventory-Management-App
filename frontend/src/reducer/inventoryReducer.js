@@ -45,9 +45,10 @@ const inventoryReducer = (state = initialState, action) => {
         error: null,
       };
     case DELETE_ITEM_SUCCESS:
+      const updatedItems = state.items.filter((item) => item.id !== action.payload.itemId);
       return {
         ...state,
-        items: action.payload,
+        items: updatedItems,
         loading: false,
         error: null,
       };

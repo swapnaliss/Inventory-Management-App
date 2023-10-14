@@ -60,10 +60,10 @@ export const addItemFailure = (error) => ({
 });
 
 export const addItem = createAsyncThunk('inventory/addItem', async (item, { dispatch }) => {
-  console.log(item);
   try {
     dispatch(addItemRequest());
     const response = await axios.post('http://localhost:5000/api/items', item); // Make an HTTP POST request to your API endpoint
+    dispatch(fetchInventory());
     return response.data;
   } catch (error) {
     dispatch(addItemFailure(error));
