@@ -15,7 +15,7 @@ const DataTable = ({ data, onEdit, onDelete }) => {
       </thead>
       <tbody>
         {data.map((item) => (
-          <tr key={item.id} className="border-t group hover:bg-gray-100">
+          <tr key={item._id} className="border-t group hover:bg-gray-100">
             <td className="py-2 px-4 text-center">{item.name}</td>
             <td className="py-2 px-4 text-center">{item.quantity}</td>
             <td className="py-2 px-4 text-center">{item.price}</td>

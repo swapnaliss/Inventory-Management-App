@@ -2,12 +2,12 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import DataTable from './components/DataTable';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchInventory } from './store/actions/inventoryActions';
+import { fetchInventory, addItem } from './store/actions/inventoryActions';
 import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
   const [selectedMenuItem, setSelectedMenuItem] = useState('Inventory');
-  const [isModalOpen, setIsModalOpen] = useState(false); // To control modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newItem, setNewItem] = useState({
     name: '',
     price: 0,
@@ -21,7 +21,16 @@ function App() {
 
   console.log(inventoryData);
 
-  const handleAddItem = (newItem) => {
+  const handleAddItem = (event) => {
+    event.preventDefault();
+    dispatch(addItem(newItem));
+    setNewItem({
+      name: '',
+      price: 0,
+      quantity: 0,
+    });
+    dispatch(fetchInventory());
+    setIsModalOpen(false);
   };
 
   const handleEdit = (item) => {
@@ -43,8 +52,6 @@ function App() {
   useEffect(() => {
     dispatch(fetchInventory());
   }, [dispatch]);
-
-  console.log(inventoryData);
 
   return (
     <div className="flex h-screen">
@@ -102,7 +109,7 @@ function App() {
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
             <div className="bg-white w-1/2 p-6 rounded-lg">
               <h2 className="text-2xl font-semibold mb-4">Add New Item</h2>
-              <form>
+              <form onSubmit={handleAddItem}>
                 <div className="mb-4">
                   <label htmlFor="name" className="block text-sm font-medium text-gray-600">
                     Name
@@ -115,6 +122,7 @@ function App() {
                     value={newItem.name}
                     onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                     className="w-full p-2 rounded border border-gray-300"
+                    required
                   />
                 </div>
 
@@ -130,6 +138,7 @@ function App() {
                     value={newItem.price}
                     onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
                     className="w-full p-2 rounded border border-gray-300"
+                    required
                   />
                 </div>
 
@@ -145,6 +154,7 @@ function App() {
                     value={newItem.quantity}
                     onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
                     className="w-full p-2 rounded border border-gray-300"
+                    required
                   />
                 </div>
                 <div className="flex justify-end">
