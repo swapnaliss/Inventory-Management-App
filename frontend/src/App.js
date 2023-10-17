@@ -168,7 +168,7 @@ function App() {
             <button onClick={openSalesForm} className="bg-green-500 text-white py-2 px-4 rounded-md mb-4">
               Record sales
             </button>
-            <SalesTable data={salesData} onEdit={handleEdit} onDelete={handleDelete} />
+            <SalesTable data={salesData} />
           </>
         )}
         {selectedMenuItem === 'Reports' && (
